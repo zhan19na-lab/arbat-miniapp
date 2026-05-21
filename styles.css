@@ -1,4 +1,4 @@
-/* ═══════════════════════════════════════════════════════════
+﻿/* ═══════════════════════════════════════════════════════════
    styles.css — Главный файл стилей Telegram Mini App «Арбат»
    Используем CSS-переменные Telegram для автоматической
    поддержки светлой и тёмной темы без дополнительного кода.
@@ -82,7 +82,7 @@ body {
   width: 100%; height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: var(--tg-theme-bg-color, #ffffff);
+  background-color: #0d0d1a;
   transform: translateX(100%);
   transition: transform 0.25s ease;
   overflow: hidden;
@@ -128,13 +128,13 @@ body {
   flex-direction: column;
   gap: 10px;
   padding: 16px 16px 24px;
-  background: var(--tg-theme-bg-color, #ffffff);
+  background: #0d0d1a;
 }
 
 .screen__footer {
   padding: 12px 16px;
   border-top: 1px solid #16162a;
-  background: var(--tg-theme-bg-color, #ffffff);
+  background: #0d0d1a;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -145,7 +145,7 @@ body {
   align-items: center;
   height: var(--header-height);
   padding: 0 16px;
-  background: var(--tg-theme-bg-color, #0d0d1a);
+  background: #0d0d1a;
   border-bottom: 1px solid rgba(199,125,255,0.15);
   flex-shrink: 0;
   gap: 8px;
@@ -163,14 +163,14 @@ body {
   text-align: center;
   font-size: 16px;
   font-weight: 600;
-  color: var(--tg-theme-text-color, #000);
+  color: #f0eaff;
 }
 
 .header__back-btn {
   background: none;
   border: none;
   font-size: 17px;
-  color: var(--tg-theme-link-color, #2AABEE);
+  color: #c77dff;
   cursor: pointer;
   padding: 8px 4px;
   min-height: 44px;
@@ -190,13 +190,13 @@ body {
 
 .header__step {
   font-size: 13px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   white-space: nowrap;
 }
 
 .header__update {
   font-size: 11px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   white-space: nowrap;
 }
 
@@ -222,13 +222,13 @@ body {
   justify-content: center;
   gap: 3px;
   cursor: pointer;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   transition: color 0.15s;
   min-height: 44px;
 }
 
 .bottom-nav__item--active {
-  color: var(--tg-theme-button-color, #2AABEE);
+  color: #9b30d9;
 }
 
 .bottom-nav__icon {
@@ -288,7 +288,7 @@ body {
 
 .btn--secondary {
   background: #16162a;
-  color: var(--tg-theme-text-color, #000);
+  color: #f0eaff;
 }
 
 .btn--success {
@@ -298,7 +298,7 @@ body {
 
 .btn--ghost {
   background: transparent;
-  color: var(--tg-theme-link-color, #2AABEE);
+  color: #c77dff;
 }
 
 .btn--sm {
@@ -352,7 +352,7 @@ body {
 
 .onboarding__subtitle {
   font-size: 15px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   line-height: 1.6;
 }
 
@@ -370,7 +370,7 @@ body {
 }
 
 .onboarding__legal {
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -498,7 +498,7 @@ body {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.3;
-  color: var(--tg-theme-text-color, #000);
+  color: #f0eaff;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -539,7 +539,7 @@ body {
 
 .event-banner__date {
   font-size: 12px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -591,7 +591,7 @@ body {
 
 .event-mini-card__date {
   font-size: 11px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
 }
 
 .event-mini-card__title {
@@ -653,7 +653,7 @@ body {
 
 .event-card__subtitle {
   font-size: 14px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   margin-top: 2px;
 }
 
@@ -661,7 +661,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   margin-top: 8px;
-  color: var(--tg-theme-text-color, #000);
+  color: #f0eaff;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -711,7 +711,7 @@ body {
 .event-detail__desc {
   font-size: 14px;
   line-height: 1.6;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -747,9 +747,9 @@ body {
 .date-chip:active { transform: scale(0.95); }
 
 .date-chip--selected {
-  background: var(--tg-theme-button-color, #2AABEE);
-  border-color: var(--tg-theme-button-color, #2AABEE);
-  color: var(--tg-theme-button-text-color, #ffffff);
+  background: #9b30d9;
+  border-color: #9b30d9;
+  color: #ffffff;
 }
 
 .date-chip__day {
@@ -808,8 +808,8 @@ body {
 }
 
 .table-chip--selected {
-  background: var(--tg-theme-button-color, #2AABEE);
-  border-color: var(--tg-theme-button-color, #2AABEE);
+  background: #9b30d9;
+  border-color: #9b30d9;
   color: #ffffff;
 }
 
@@ -843,7 +843,7 @@ body {
   text-align: center;
   font-size: 12px;
   font-weight: 600;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 8px 0;
@@ -898,7 +898,7 @@ body {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   margin-bottom: 6px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -911,7 +911,7 @@ body {
   border-radius: var(--radius-md);
   border: 1.5px solid #1e1e35;
   background: #16162a;
-  color: var(--tg-theme-text-color, #000);
+  color: #f0eaff;
   font-size: 15px;
   font-family: inherit;
   outline: none;
@@ -919,7 +919,7 @@ body {
 }
 
 .form-input:focus {
-  border-color: var(--tg-theme-button-color, #2AABEE);
+  border-color: #9b30d9;
 }
 
 .form-textarea {
@@ -942,7 +942,7 @@ body {
   border-radius: var(--radius-md);
   border: 2px solid #1e1e35;
   background: #16162a;
-  color: var(--tg-theme-text-color, #000);
+  color: #f0eaff;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -951,9 +951,9 @@ body {
 
 .chip--selected,
 .chip:active {
-  background: var(--tg-theme-button-color, #2AABEE);
-  border-color: var(--tg-theme-button-color, #2AABEE);
-  color: var(--tg-theme-button-text-color, #fff);
+  background: #9b30d9;
+  border-color: #9b30d9;
+  color: #ffffff;
 }
 
 /* Радио-кнопки */
@@ -975,7 +975,7 @@ body {
 .radio-label input[type="radio"] {
   width: 20px;
   height: 20px;
-  accent-color: var(--tg-theme-button-color, #2AABEE);
+  accent-color: #9b30d9;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -993,7 +993,7 @@ body {
 
 .confirm-card--info {
   font-size: 13px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   line-height: 1.6;
 }
 
@@ -1014,7 +1014,7 @@ body {
 
 .success-booking-id {
   font-size: 13px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   background: #16162a;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
@@ -1053,7 +1053,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  background: var(--tg-theme-bg-color, #fff);
+  background: #0d0d1a;
   border: 2px solid #1e1e35;
 }
 
@@ -1072,14 +1072,14 @@ body {
 
 .loyalty-reward {
   font-size: 13px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   margin-bottom: 16px;
 }
 
 .loyalty-info {
   margin-bottom: 16px;
   font-size: 13px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   line-height: 1.5;
 }
 
@@ -1099,7 +1099,7 @@ body {
   height: 140px;
   background: #fff;
   border-radius: var(--radius-md);
-  border: 2px dashed var(--tg-theme-hint-color, #ccc);
+  border: 2px dashed #3a3a5c;
   gap: 8px;
 }
 
@@ -1111,7 +1111,7 @@ body {
 
 .qr-label {
   font-size: 11px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1156,7 +1156,7 @@ body {
   border: none;
   border-radius: var(--radius-md);
   font-size: 15px;
-  color: var(--tg-theme-text-color, #000);
+  color: #f0eaff;
   cursor: pointer;
   text-align: left;
   gap: 12px;
@@ -1180,7 +1180,7 @@ body {
 
 .booking-item__id {
   font-size: 12px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   margin-bottom: 8px;
 }
 
@@ -1229,7 +1229,7 @@ body {
   border-radius: var(--radius-xl);
   border: none;
   background: #16162a;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -1237,8 +1237,8 @@ body {
 }
 
 .filter-tab--active {
-  background: var(--tg-theme-button-color, #2AABEE);
-  color: var(--tg-theme-button-text-color, #fff);
+  background: #9b30d9;
+  color: #ffffff;
 }
 
 .tabs {
@@ -1254,7 +1254,7 @@ body {
   border: none;
   font-size: 15px;
   font-weight: 600;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -2px;
@@ -1262,8 +1262,8 @@ body {
 }
 
 .tab--active {
-  color: var(--tg-theme-button-color, #2AABEE);
-  border-bottom-color: var(--tg-theme-button-color, #2AABEE);
+  color: #9b30d9;
+  border-bottom-color: #9b30d9;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1295,7 +1295,7 @@ body {
 .section-title {
   font-size: 13px;
   font-weight: 700;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
@@ -1303,19 +1303,19 @@ body {
 
 .section-desc {
   font-size: 14px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   line-height: 1.6;
   margin-bottom: 20px;
 }
 
 .hint-text {
   font-size: 13px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   line-height: 1.5;
 }
 
 .link {
-  color: var(--tg-theme-link-color, #2AABEE);
+  color: #c77dff;
   text-decoration: none;
   font-weight: 600;
 }
@@ -1346,7 +1346,7 @@ body {
 
 .step-hint {
   font-size: 13px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
   background: #16162a;
   border-radius: var(--radius-sm);
   padding: 10px 14px;
@@ -1358,7 +1358,7 @@ body {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 12px;
-  color: var(--tg-theme-hint-color, #999);
+  color: #8878aa;
 }
 
 .avatar {
@@ -1442,7 +1442,7 @@ body {
   transform: translateX(-50%) translateY(100%);
   width: 100%;
   max-width: 430px;
-  background: var(--tg-theme-bg-color, #fff);
+  background: #0d0d1a;
   border-radius: var(--radius-xl) var(--radius-xl) 0 0;
   box-shadow: var(--shadow-modal);
   transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
@@ -1458,7 +1458,7 @@ body {
   width: 36px;
   height: 4px;
   border-radius: 2px;
-  background: var(--tg-theme-hint-color, #ccc);
+  background: #3a3a5c;
   margin: 12px auto 0;
 }
 
