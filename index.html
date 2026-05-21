@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>Арбат</title>
+
+  <!-- Telegram Web App SDK — подключается из Telegram, здесь мок для тестирования -->
+  <script>
+    // Мок Telegram SDK для тестирования в браузере вне Telegram
+    window.Telegram = window.Telegram || {
+      WebApp: {
+        ready: function() {},
+        expand: function() {},
+        enableClosingConfirmation: function() {},
+        initDataUnsafe: { user: { id: 12345, first_name: 'Гость', username: 'test' } },
+        HapticFeedback: { impactOccurred: function() {}, notificationOccurred: function() {} },
+        CloudStorage: null, // используем localStorage как fallback
+        openTelegramLink: function(url) { window.open(url, '_blank'); },
+        MainButton: { setText: function() {}, show: function() {}, hide: function() {} }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Корневой контейнер приложения -->
+  <div id="app">
+
+    <!-- Все экраны рендерятся сюда через app.js -->
+    <!-- Активный экран имеет класс screen--active, остальные скрыты -->
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 1: Приветствие + Политика конфиденциальности     -->
+    <!-- Показывается только при первом запуске                  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-onboarding" class="screen">
+      <div class="onboarding">
+        <div class="onboarding__logo">
+          <div class="logo-circle">🎵</div>
+        </div>
+        <h1 class="onboarding__title">Добро пожаловать<br>в «Арбат»!</h1>
+        <p class="onboarding__subtitle">Клуб, кафе и бильярд в Микашевичах.<br>Бронируйте столики, следите за афишей<br>и копите штампы лояльности.</p>
+
+        <div class="onboarding__privacy">
+          <p>Перед началом прочитайте:</p>
+          <a href="#" class="link" id="privacy-link">Политика конфиденциальности ↗</a>
+          <p class="onboarding__legal">Нажимая «Продолжить», вы соглашаетесь с обработкой ваших персональных данных согласно Закону Республики Беларусь № 99-З «О защите персональных данных».</p>
+        </div>
+
+        <!-- Кнопка активируется через 2 секунды (принудительное прочтение) -->
+        <button id="btn-accept-privacy" class="btn btn--primary btn--full" disabled>
+          Продолжить
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 2: Главный — выбор зоны (Клуб / Кафе)           -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-home" class="screen">
+      <div class="header">
+        <div class="header__logo">🎵 Арбат</div>
+        <button class="header__profile-btn" onclick="App.navigate('profile')">
+          <span class="avatar" id="user-avatar">👤</span>
+        </button>
+      </div>
+
+      <div class="screen__content">
+        <h2 class="greeting" id="user-greeting">Привет! 👋</h2>
+        <p class="hint-text">Выберите раздел:</p>
+
+        <!-- Карточка КЛУБ -->
+        <div class="zone-card zone-card--club" onclick="App.navigate('club-home')">
+          <div class="zone-card__icon">🎵</div>
+          <div class="zone-card__info">
+            <div class="zone-card__title">КЛУБ</div>
+            <div class="zone-card__subtitle">Пт–Сб • 23:00–02:00</div>
+            <div class="zone-card__desc">Афиша, бронирование, карта столов</div>
+          </div>
+          <div class="zone-card__arrow">›</div>
+        </div>
+
+        <!-- Карточка КАФЕ — заглушка, откроется в v2 -->
+        <div class="zone-card zone-card--cafe zone-card--disabled" onclick="App.showToast('Кафе откроется в приложении совсем скоро!')">
+          <div class="zone-card__icon">☕</div>
+          <div class="zone-card__info">
+            <div class="zone-card__title">КАФЕ</div>
+            <div class="zone-card__subtitle">Ежедневно • 9:00–22:00</div>
+            <div class="zone-card__desc badge-soon">Скоро — открытие в приложении</div>
+          </div>
+          <div class="zone-card__arrow">›</div>
+        </div>
+      </div>
+
+      <nav class="bottom-nav" id="bottom-nav-home">
+        <button class="bottom-nav__item bottom-nav__item--active" onclick="App.navigate('home')">
+          <span class="bottom-nav__icon">🏠</span>
+          <span class="bottom-nav__label">Главная</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('events')">
+          <span class="bottom-nav__icon">🎵</span>
+          <span class="bottom-nav__label">Афиша</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('my-bookings')">
+          <span class="bottom-nav__icon">📋</span>
+          <span class="bottom-nav__label">Брони</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('profile')">
+          <span class="bottom-nav__icon">👤</span>
+          <span class="bottom-nav__label">Профиль</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 3: Главный экран Клуба                           -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-club-home" class="screen">
+      <div class="header">
+        <button class="header__back-btn" onclick="App.navigate('home')">‹ Назад</button>
+        <div class="header__title">КЛУБ «АРБАТ»</div>
+      </div>
+
+      <div class="screen__content screen__content--with-nav">
+
+        <!-- Баннер ближайшего события (скрывается если нет событий) -->
+        <div id="club-event-banner" class="event-banner" style="display:none">
+          <div class="event-banner__img-wrap">
+            <div class="event-banner__img" id="banner-img"></div>
+          </div>
+          <div class="event-banner__body">
+            <div class="event-banner__date" id="banner-date"></div>
+            <div class="event-banner__title" id="banner-title"></div>
+            <button class="btn btn--ghost btn--sm" onclick="App.openBannerEvent()">Подробнее →</button>
+          </div>
+        </div>
+
+        <!-- Сетка быстрых действий 2×2 -->
+        <p class="section-title">Быстрые действия:</p>
+        <div class="actions-grid">
+          <div class="action-card" onclick="App.navigate('booking')">
+            <div class="action-card__icon">📅</div>
+            <div class="action-card__label">Забронировать<br>столик</div>
+          </div>
+          <div class="action-card" onclick="App.navigate('table-map')">
+            <div class="action-card__icon">🗺️</div>
+            <div class="action-card__label">Карта<br>столов</div>
+          </div>
+          <div class="action-card action-card--disabled" onclick="App.showToast('Бильярд откроется совсем скоро!')">
+            <div class="action-card__icon">🎱</div>
+            <div class="action-card__label">Бильярд<br><span class="badge-soon-sm">скоро</span></div>
+          </div>
+          <div class="action-card" onclick="App.navigate('hall-rental')">
+            <div class="action-card__icon">🏛️</div>
+            <div class="action-card__label">Аренда<br>зала</div>
+          </div>
+        </div>
+
+        <!-- Горизонтальная афиша -->
+        <p class="section-title">Ближайшие события:</p>
+        <div class="events-scroll" id="club-events-scroll">
+          <!-- Карточки событий вставляются через data.js -->
+        </div>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="bottom-nav__item" onclick="App.navigate('home')">
+          <span class="bottom-nav__icon">🏠</span><span class="bottom-nav__label">Главная</span>
+        </button>
+        <button class="bottom-nav__item bottom-nav__item--active" onclick="App.navigate('events')">
+          <span class="bottom-nav__icon">🎵</span><span class="bottom-nav__label">Афиша</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('my-bookings')">
+          <span class="bottom-nav__icon">📋</span><span class="bottom-nav__label">Брони</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('profile')">
+          <span class="bottom-nav__icon">👤</span><span class="bottom-nav__label">Профиль</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 4: Афиша (список событий)                        -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-events" class="screen">
+      <div class="header">
+        <button class="header__back-btn" onclick="App.navigate('club-home')">‹ Назад</button>
+        <div class="header__title">АФИША</div>
+      </div>
+
+      <div class="screen__content screen__content--with-nav">
+        <!-- Фильтры -->
+        <div class="filter-tabs">
+          <button class="filter-tab filter-tab--active" onclick="App.filterEvents('all', this)">Все</button>
+          <button class="filter-tab" onclick="App.filterEvents('this_month', this)">Этот месяц</button>
+          <button class="filter-tab" onclick="App.filterEvents('next_month', this)">Следующий</button>
+        </div>
+
+        <!-- Список событий -->
+        <div id="events-list" class="events-list">
+          <!-- Вставляется через data.js -->
+        </div>
+
+        <!-- Заглушка если нет событий -->
+        <div id="events-empty" class="empty-state" style="display:none">
+          <div class="empty-state__icon">🎵</div>
+          <p>Следите за обновлениями!<br>События появятся здесь совсем скоро.</p>
+        </div>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="bottom-nav__item" onclick="App.navigate('home')">
+          <span class="bottom-nav__icon">🏠</span><span class="bottom-nav__label">Главная</span>
+        </button>
+        <button class="bottom-nav__item bottom-nav__item--active">
+          <span class="bottom-nav__icon">🎵</span><span class="bottom-nav__label">Афиша</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('my-bookings')">
+          <span class="bottom-nav__icon">📋</span><span class="bottom-nav__label">Брони</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('profile')">
+          <span class="bottom-nav__icon">👤</span><span class="bottom-nav__label">Профиль</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 5: Карточка события                              -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-event-detail" class="screen">
+      <div class="header">
+        <button class="header__back-btn" onclick="App.navigate('events')">‹ Назад</button>
+      </div>
+
+      <div class="screen__content">
+        <div class="event-detail__img-wrap">
+          <div class="event-detail__img" id="detail-img"></div>
+        </div>
+        <div class="event-detail__body">
+          <h2 class="event-detail__title" id="detail-title"></h2>
+          <div class="event-detail__meta">
+            <div class="meta-row"><span>📅</span><span id="detail-date"></span></div>
+            <div class="meta-row"><span>🕙</span><span id="detail-time"></span></div>
+            <div class="meta-row"><span>💰</span><span id="detail-price"></span></div>
+            <div class="meta-row"><span>📍</span><span>Клуб «Арбат», Микашевичи</span></div>
+          </div>
+          <p class="event-detail__desc" id="detail-desc"></p>
+        </div>
+
+        <div class="screen__actions">
+          <!-- ЕРИП-заглушка: кнопка есть, но показывает bottom sheet -->
+          <button class="btn btn--primary btn--full" onclick="App.showTicketStub()">
+            🎟️ Купить билет
+          </button>
+          <button class="btn btn--secondary btn--full" onclick="App.navigate('booking')">
+            📅 Забронировать столик
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 6: Бронирование — Шаг 1 (выбор даты)            -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-booking" class="screen">
+      <div class="header">
+        <button class="header__back-btn" id="booking-back-btn">‹ Назад</button>
+        <div class="header__title">Бронирование</div>
+        <div class="header__step" id="booking-step-label">Шаг 1 из 4</div>
+      </div>
+
+      <!-- Шаг 1: Дата -->
+      <div id="booking-step-1" class="booking-step screen__content">
+        <p class="step-hint">⚠️ Клуб работает только в пятницу и субботу (23:00 – 02:00)</p>
+        <p class="section-title">Выберите дату:</p>
+        <div class="date-scroll" id="date-scroll">
+          <!-- Дни вставляются через app.js -->
+        </div>
+        <div class="screen__actions">
+          <button class="btn btn--primary btn--full" id="btn-step1-next" disabled onclick="App.bookingNextStep()">
+            Далее
+          </button>
+        </div>
+      </div>
+
+      <!-- Шаг 2: Выбор стола -->
+      <div id="booking-step-2" class="booking-step screen__content" style="display:none">
+        <p class="step-date" id="step2-selected-date"></p>
+        <p class="section-title">Выберите стол:</p>
+        <div class="tables-grid" id="tables-grid">
+          <!-- Столы вставляются через app.js -->
+        </div>
+        <div class="legend">
+          <span class="legend__item"><span class="dot dot--green"></span> Свободен</span>
+          <span class="legend__item"><span class="dot dot--red"></span> Занят</span>
+        </div>
+        <div class="screen__actions">
+          <button class="btn btn--primary btn--full" id="btn-step2-next" disabled onclick="App.bookingNextStep()">
+            Далее
+          </button>
+        </div>
+      </div>
+
+      <!-- Шаг 3: Форма -->
+      <div id="booking-step-3" class="booking-step screen__content" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Ваше имя</label>
+          <input type="text" class="form-input" id="booking-name" placeholder="Имя" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Телефон *</label>
+          <input type="tel" class="form-input" id="booking-phone" placeholder="+375 XX XXX XX XX" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Количество гостей</label>
+          <div class="guests-chips" id="guests-chips">
+            <button class="chip" onclick="App.selectGuests(1, this)">1</button>
+            <button class="chip" onclick="App.selectGuests(2, this)">2</button>
+            <button class="chip" onclick="App.selectGuests(3, this)">3</button>
+            <button class="chip" onclick="App.selectGuests(4, this)">4</button>
+            <button class="chip" onclick="App.selectGuests(5, this)">5</button>
+            <button class="chip" onclick="App.selectGuests(6, this)">6+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Пожелания (необязательно)</label>
+          <textarea class="form-input form-textarea" id="booking-comment" placeholder="Например: у окна, тихий угол..."></textarea>
+        </div>
+        <div class="screen__actions">
+          <button class="btn btn--primary btn--full" id="btn-step3-next" onclick="App.bookingNextStep()">
+            Далее
+          </button>
+        </div>
+      </div>
+
+      <!-- Шаг 4: Подтверждение -->
+      <div id="booking-step-4" class="booking-step screen__content" style="display:none">
+        <p class="section-title">Проверьте данные:</p>
+        <div class="confirm-card">
+          <div class="confirm-row"><span>📅</span><span id="confirm-date"></span></div>
+          <div class="confirm-row"><span>🕙</span><span>23:00 – 02:00</span></div>
+          <div class="confirm-row"><span>🪑</span><span id="confirm-table"></span></div>
+          <div class="confirm-row"><span>👥</span><span id="confirm-guests"></span></div>
+          <div class="confirm-row"><span>📞</span><span id="confirm-phone"></span></div>
+        </div>
+        <div class="confirm-card confirm-card--info">
+          <p>💳 Оплата: на месте</p>
+          <p>⚠️ Бронь удерживается 30 минут после открытия клуба.</p>
+        </div>
+        <div class="screen__actions">
+          <button class="btn btn--success btn--full" onclick="App.confirmBooking()">
+            ✅ Подтвердить бронирование
+          </button>
+          <button class="btn btn--ghost btn--full" onclick="App.bookingGoToStep(1)">
+            Изменить данные
+          </button>
+        </div>
+      </div>
+
+      <!-- Экран успеха (после подтверждения) -->
+      <div id="booking-success" class="booking-step screen__content screen__content--center" style="display:none">
+        <div class="success-icon">✅</div>
+        <h2>Бронирование подтверждено!</h2>
+        <p class="success-booking-id" id="success-booking-id"></p>
+        <p class="hint-text">Мы пришлём напоминание за 2 часа до начала через этот бот.</p>
+        <div class="screen__actions">
+          <button class="btn btn--primary btn--full" onclick="App.navigate('my-bookings')">
+            Мои бронирования
+          </button>
+          <button class="btn btn--ghost btn--full" onclick="App.navigate('home')">
+            На главную
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 7: Карта столов (live, polling 20 сек)           -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-table-map" class="screen">
+      <div class="header">
+        <button class="header__back-btn" onclick="App.navigate('club-home')">‹ Назад</button>
+        <div class="header__title">КАРТА СТОЛОВ</div>
+        <div class="header__update" id="map-update-time"></div>
+      </div>
+
+      <div class="screen__content screen__content--with-nav-btn">
+        <!-- SVG-схема зала -->
+        <div class="hall-map" id="hall-map">
+          <div class="hall-map__label hall-map__label--top">🎤 СЦЕНА / DJ</div>
+
+          <div class="tables-map-grid" id="tables-map-grid">
+            <!-- Столы рендерятся через app.js -->
+          </div>
+
+          <div class="hall-map__label hall-map__label--bottom">🍸 BAR</div>
+        </div>
+
+        <div class="legend">
+          <span class="legend__item"><span class="dot dot--green"></span> Свободен</span>
+          <span class="legend__item"><span class="dot dot--red"></span> Занят</span>
+        </div>
+
+        <div id="map-offline-banner" class="offline-banner" style="display:none">
+          ⚠️ Нет соединения. Данные могут быть неактуальны.
+        </div>
+      </div>
+
+      <div class="screen__footer">
+        <button class="btn btn--primary btn--full" onclick="App.navigate('booking')">
+          📅 Забронировать стол
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 8: Аренда зала                                   -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-hall-rental" class="screen">
+      <div class="header">
+        <button class="header__back-btn" onclick="App.navigate('club-home')">‹ Назад</button>
+        <div class="header__title">АРЕНДА ЗАЛА</div>
+      </div>
+
+      <div class="screen__content" id="hall-rental-form-wrap">
+        <p class="section-desc">Организуете корпоратив, день рождения или другое мероприятие? Заполните заявку — мы свяжемся с вами в течение 24 часов.</p>
+
+        <div class="form-group">
+          <label class="form-label">Ваше имя</label>
+          <input type="text" class="form-input" id="rental-name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Телефон *</label>
+          <input type="tel" class="form-input" id="rental-phone" placeholder="+375 XX XXX XX XX" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Тип мероприятия</label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="event-type" value="birthday" /> День рождения</label>
+            <label class="radio-label"><input type="radio" name="event-type" value="corp" /> Корпоратив</label>
+            <label class="radio-label"><input type="radio" name="event-type" value="other" /> Другое</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Желаемая дата</label>
+          <input type="date" class="form-input" id="rental-date" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Примерное количество гостей</label>
+          <input type="number" class="form-input" id="rental-guests" min="10" max="100" placeholder="от 10 до 50" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Комментарий (необязательно)</label>
+          <textarea class="form-input form-textarea" id="rental-comment" placeholder="Ваши пожелания..."></textarea>
+        </div>
+
+        <div class="screen__actions">
+          <button class="btn btn--primary btn--full" onclick="App.submitHallRental()">
+            Отправить заявку
+          </button>
+        </div>
+      </div>
+
+      <!-- Успех после отправки -->
+      <div id="hall-rental-success" class="screen__content screen__content--center" style="display:none">
+        <div class="success-icon">✅</div>
+        <h2>Заявка отправлена!</h2>
+        <p class="hint-text">Мы позвоним вам в течение 24 часов.</p>
+        <button class="btn btn--primary btn--full" onclick="App.navigate('home')">На главную</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 9: Профиль + Программа лояльности                -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-profile" class="screen">
+      <div class="header">
+        <button class="header__back-btn" onclick="App.navigate('home')">‹ Назад</button>
+        <div class="header__title">МОЙ ПРОФИЛЬ</div>
+      </div>
+
+      <div class="screen__content screen__content--with-nav">
+        <!-- Аватар и имя -->
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-avatar">👤</div>
+          <div class="profile-name" id="profile-name">Гость</div>
+        </div>
+
+        <!-- Программа лояльности -->
+        <div class="loyalty-card">
+          <div class="loyalty-card__title">🏅 Программа лояльности</div>
+          <div class="stamps-grid" id="stamps-grid">
+            <!-- 10 ячеек штампов вставляются через app.js -->
+          </div>
+          <p class="loyalty-progress" id="loyalty-progress">0 из 10 штампов</p>
+          <p class="loyalty-reward">10 штампов → бесплатный вход 🎉</p>
+
+          <div class="loyalty-info">
+            <p class="hint-text">Как получить штамп?</p>
+            <p>Штамп = 1 посещение клуба.<br>Администратор сканирует ваш QR-код.</p>
+          </div>
+
+          <!-- QR-код пользователя для кассы -->
+          <div class="qr-wrap">
+            <div class="qr-placeholder" id="user-qr">
+              <div class="qr-pattern">▣</div>
+              <p class="qr-label">Ваш QR-код</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Кнопки профиля -->
+        <div class="profile-actions">
+          <button class="profile-action-btn" onclick="App.navigate('my-bookings')">
+            📋 Мои бронирования
+          </button>
+          <button class="profile-action-btn" onclick="App.showPrivacyPolicy()">
+            🔒 Политика конфиденциальности
+          </button>
+          <button class="profile-action-btn" onclick="App.openSupport()">
+            💬 Связаться с нами
+          </button>
+        </div>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="bottom-nav__item" onclick="App.navigate('home')">
+          <span class="bottom-nav__icon">🏠</span><span class="bottom-nav__label">Главная</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('events')">
+          <span class="bottom-nav__icon">🎵</span><span class="bottom-nav__label">Афиша</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('my-bookings')">
+          <span class="bottom-nav__icon">📋</span><span class="bottom-nav__label">Брони</span>
+        </button>
+        <button class="bottom-nav__item bottom-nav__item--active">
+          <span class="bottom-nav__icon">👤</span><span class="bottom-nav__label">Профиль</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- ЭКРАН 10: Мои бронирования                             -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div id="screen-my-bookings" class="screen">
+      <div class="header">
+        <button class="header__back-btn" onclick="App.navigate('profile')">‹ Назад</button>
+        <div class="header__title">МОИ БРОНИРОВАНИЯ</div>
+      </div>
+
+      <div class="screen__content screen__content--with-nav">
+        <div class="tabs">
+          <button class="tab tab--active" onclick="App.switchBookingsTab('upcoming', this)">Предстоящие</button>
+          <button class="tab" onclick="App.switchBookingsTab('past', this)">Прошедшие</button>
+        </div>
+
+        <div id="bookings-list" class="bookings-list">
+          <!-- Вставляется через app.js -->
+        </div>
+
+        <div id="bookings-empty" class="empty-state" style="display:none">
+          <div class="empty-state__icon">📋</div>
+          <p>У вас нет предстоящих бронирований.</p>
+          <button class="btn btn--primary" onclick="App.navigate('booking')">
+            Забронировать столик
+          </button>
+        </div>
+      </div>
+
+      <nav class="bottom-nav">
+        <button class="bottom-nav__item" onclick="App.navigate('home')">
+          <span class="bottom-nav__icon">🏠</span><span class="bottom-nav__label">Главная</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('events')">
+          <span class="bottom-nav__icon">🎵</span><span class="bottom-nav__label">Афиша</span>
+        </button>
+        <button class="bottom-nav__item bottom-nav__item--active">
+          <span class="bottom-nav__icon">📋</span><span class="bottom-nav__label">Брони</span>
+        </button>
+        <button class="bottom-nav__item" onclick="App.navigate('profile')">
+          <span class="bottom-nav__icon">👤</span><span class="bottom-nav__label">Профиль</span>
+        </button>
+      </nav>
+    </div>
+
+  </div><!-- /#app -->
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- ГЛОБАЛЬНЫЕ КОМПОНЕНТЫ                                   -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <!-- Toast-уведомление (появляется снизу, 3 сек) -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <!-- Bottom Sheet (модальная шторка снизу) -->
+  <div id="bottom-sheet-overlay" class="bottom-sheet-overlay" onclick="App.closeBottomSheet()"></div>
+  <div id="bottom-sheet" class="bottom-sheet">
+    <div class="bottom-sheet__handle"></div>
+    <div id="bottom-sheet-content" class="bottom-sheet__content"></div>
+  </div>
+
+  <!-- Скрипты — порядок важен -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1467 @@
+/* ═══════════════════════════════════════════════════════════
+   styles.css — Главный файл стилей Telegram Mini App «Арбат»
+   Используем CSS-переменные Telegram для автоматической
+   поддержки светлой и тёмной темы без дополнительного кода.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Сброс и базовые стили ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden; /* прокрутка только внутри экранов */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+
+  /* Цвета берём из Telegram — автоматически тёмная/светлая тема */
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
+}
+
+/* Тёмная клубная тема с неоновыми акцентами */
+:root {
+  --tg-theme-bg-color: #0d0d1a;
+  --tg-theme-text-color: #f0eaff;
+  --tg-theme-hint-color: #8878aa;
+  --tg-theme-link-color: #c77dff;
+  --tg-theme-button-color: #9b30d9;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #1a1a2e;
+
+  /* Неоновые акценты */
+  --color-neon-purple: #c77dff;
+  --color-neon-pink:   #ff6eb4;
+  --color-neon-blue:   #7eb8ff;
+
+  --color-success: #39ff8f;
+  --color-danger:  #ff4f7b;
+  --color-warning: #ffb347;
+
+  --color-card-bg: #16162a;
+  --color-card-border: rgba(199, 125, 255, 0.15);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  --shadow-card:  0 2px 16px rgba(155, 48, 217, 0.15);
+  --shadow-neon:  0 0 20px rgba(199, 125, 255, 0.3);
+  --shadow-modal: 0 -4px 30px rgba(155, 48, 217, 0.3);
+
+  --nav-height: 60px;
+  --header-height: 52px;
+}
+
+/* ── Приложение — корневой контейнер ── */
+#app {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  max-width: 430px; /* мобильный экран */
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ЭКРАНЫ — система навигации
+   Активный экран .screen--active, остальные скрыты
+   ═══════════════════════════════════════════════════════════ */
+.screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  overflow: hidden;
+}
+
+.screen--active {
+  transform: translateX(0);
+}
+
+.screen--slide-out {
+  transform: translateX(-30%);
+}
+
+/* ── Контент экрана (прокручиваемая область) ── */
+.screen__content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 16px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.screen__content--with-nav {
+  padding-bottom: calc(var(--nav-height) + 16px);
+}
+
+.screen__content--with-nav-btn {
+  padding-bottom: 80px;
+}
+
+.screen__content--center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 16px;
+}
+
+/* ── Фиксированный блок с кнопками внизу экрана ── */
+.screen__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 16px 24px;
+  background: var(--tg-theme-bg-color, #ffffff);
+}
+
+.screen__footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--tg-theme-secondary-bg-color, #f1f1f1);
+  background: var(--tg-theme-bg-color, #ffffff);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ШАПКА (Header)
+   ═══════════════════════════════════════════════════════════ */
+.header {
+  display: flex;
+  align-items: center;
+  height: var(--header-height);
+  padding: 0 16px;
+  background: var(--tg-theme-bg-color, #0d0d1a);
+  border-bottom: 1px solid rgba(199,125,255,0.15);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.header__logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-neon-purple, #c77dff);
+  text-shadow: 0 0 10px rgba(199,125,255,0.6);
+}
+
+.header__title {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color, #000);
+}
+
+.header__back-btn {
+  background: none;
+  border: none;
+  font-size: 17px;
+  color: var(--tg-theme-link-color, #2AABEE);
+  cursor: pointer;
+  padding: 8px 4px;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.header__profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.header__step {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, #999);
+  white-space: nowrap;
+}
+
+.header__update {
+  font-size: 11px;
+  color: var(--tg-theme-hint-color, #999);
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   НИЖНЯЯ НАВИГАЦИЯ
+   ═══════════════════════════════════════════════════════════ */
+.bottom-nav {
+  display: flex;
+  height: var(--nav-height);
+  background: rgba(13,13,26,0.95);
+  border-top: 1px solid rgba(199,125,255,0.2);
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+}
+
+.bottom-nav__item {
+  flex: 1;
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--tg-theme-hint-color, #999);
+  transition: color 0.15s;
+  min-height: 44px;
+}
+
+.bottom-nav__item--active {
+  color: var(--tg-theme-button-color, #2AABEE);
+}
+
+.bottom-nav__icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.bottom-nav__label {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   КНОПКИ
+   Минимальная высота 44px — требование HIG и Material
+   ═══════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  text-decoration: none;
+  gap: 6px;
+}
+
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.85;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn--primary {
+  background: linear-gradient(135deg, #7a00cc, #c77dff);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(199,125,255,0.4);
+}
+
+.btn--primary:hover {
+  box-shadow: 0 0 30px rgba(199,125,255,0.6);
+}
+
+.btn--secondary {
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  color: var(--tg-theme-text-color, #000);
+}
+
+.btn--success {
+  background: var(--color-success, #34C759);
+  color: #ffffff;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--tg-theme-link-color, #2AABEE);
+}
+
+.btn--sm {
+  min-height: 36px;
+  font-size: 13px;
+  padding: 0 14px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ЭКРАН ОНБОРДИНГА
+   ═══════════════════════════════════════════════════════════ */
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px 24px;
+  text-align: center;
+  gap: 20px;
+}
+
+.onboarding__logo {
+  margin-bottom: 8px;
+}
+
+.logo-circle {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6a00c8, #c77dff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  margin: 0 auto;
+  box-shadow: 0 0 30px rgba(199, 125, 255, 0.6), 0 0 60px rgba(155, 48, 217, 0.3);
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 30px rgba(199,125,255,0.6), 0 0 60px rgba(155,48,217,0.3); }
+  50%       { box-shadow: 0 0 50px rgba(199,125,255,0.9), 0 0 90px rgba(155,48,217,0.5); }
+}
+
+.onboarding__title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.onboarding__subtitle {
+  font-size: 15px;
+  color: var(--tg-theme-hint-color, #999);
+  line-height: 1.6;
+}
+
+.onboarding__privacy {
+  background: var(--color-card-bg, #16162a);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  width: 100%;
+  text-align: left;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.onboarding__legal {
+  color: var(--tg-theme-hint-color, #999);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   КАРТОЧКИ ЗОН (Клуб / Кафе)
+   ═══════════════════════════════════════════════════════════ */
+.zone-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 14px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow-card);
+  background: var(--color-card-bg, #16162a);
+  border: 1px solid var(--color-card-border);
+  min-height: 80px;
+}
+
+.zone-card:active {
+  transform: scale(0.98);
+}
+
+.zone-card--club {
+  background: linear-gradient(135deg, #1a0533 0%, #3d0f7a 100%);
+  border-color: rgba(199,125,255,0.4);
+  color: #ffffff;
+  box-shadow: 0 0 24px rgba(199,125,255,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+.zone-card--club:active {
+  box-shadow: 0 0 40px rgba(199,125,255,0.5);
+}
+
+.zone-card--cafe {
+  background: linear-gradient(135deg, #1a0a00 0%, #3d1f00 100%);
+  border-color: rgba(255,180,100,0.2);
+  color: #ffffff;
+}
+
+.zone-card--disabled {
+  opacity: 0.55;
+}
+
+.zone-card__icon {
+  font-size: 36px;
+  flex-shrink: 0;
+}
+
+.zone-card__info {
+  flex: 1;
+}
+
+.zone-card__title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.zone-card__subtitle {
+  font-size: 13px;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+.zone-card__desc {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.zone-card__arrow {
+  font-size: 24px;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   СЕТКА БЫСТРЫХ ДЕЙСТВИЙ
+   ═══════════════════════════════════════════════════════════ */
+.actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-card-bg, #16162a);
+  border: 1px solid var(--color-card-border);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  text-align: center;
+  min-height: 90px;
+  gap: 8px;
+  box-shadow: var(--shadow-card);
+}
+
+.action-card:active {
+  box-shadow: 0 0 20px rgba(199,125,255,0.4);
+  border-color: rgba(199,125,255,0.5);
+}
+
+.action-card:active {
+  transform: scale(0.96);
+}
+
+.action-card--disabled {
+  opacity: 0.55;
+}
+
+.action-card__icon {
+  font-size: 32px;
+}
+
+.action-card__label {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--tg-theme-text-color, #000);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   БАННЕР СОБЫТИЯ
+   ═══════════════════════════════════════════════════════════ */
+.event-banner {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+}
+
+.event-banner__img-wrap {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #1a0533, #4a1280);
+  overflow: hidden;
+}
+
+.event-banner__img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+}
+
+.event-banner__body {
+  padding: 14px 16px;
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.event-banner__date {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color, #999);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-banner__title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ СОБЫТИЙ
+   ═══════════════════════════════════════════════════════════ */
+.events-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.events-scroll::-webkit-scrollbar { display: none; }
+
+.event-mini-card {
+  flex-shrink: 0;
+  width: 160px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  scroll-snap-align: start;
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+}
+
+.event-mini-card__img {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #1a0533, #9B59B6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.event-mini-card__body {
+  padding: 10px;
+}
+
+.event-mini-card__date {
+  font-size: 11px;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+.event-mini-card__title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   СПИСОК СОБЫТИЙ (Афиша)
+   ═══════════════════════════════════════════════════════════ */
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.event-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-card-bg, #16162a);
+  border: 1px solid var(--color-card-border);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
+.event-card:active {
+  box-shadow: 0 0 24px rgba(199,125,255,0.3);
+}
+
+.event-card__img {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #1a0533, #9B59B6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.event-card__body {
+  padding: 14px 16px;
+}
+
+.event-card__date {
+  font-size: 12px;
+  color: var(--color-neon-purple, #c77dff);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.event-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.event-card__subtitle {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color, #999);
+  margin-top: 2px;
+}
+
+.event-card__price {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+  color: var(--tg-theme-text-color, #000);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ДЕТАЛИ СОБЫТИЯ
+   ═══════════════════════════════════════════════════════════ */
+.event-detail__img-wrap {
+  aspect-ratio: 16/9;
+  background: linear-gradient(135deg, #1a0533, #9B59B6);
+  overflow: hidden;
+}
+
+.event-detail__img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+}
+
+.event-detail__body {
+  padding: 20px 16px;
+}
+
+.event-detail__title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.event-detail__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+}
+
+.event-detail__desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   БРОНИРОВАНИЕ — выбор даты
+   ═══════════════════════════════════════════════════════════ */
+.date-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 0 16px;
+  scrollbar-width: none;
+}
+
+.date-scroll::-webkit-scrollbar { display: none; }
+
+.date-chip {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  min-height: 72px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--tg-theme-secondary-bg-color, #f1f1f1);
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  cursor: pointer;
+  transition: all 0.15s;
+  gap: 2px;
+  padding: 8px;
+}
+
+.date-chip:active { transform: scale(0.95); }
+
+.date-chip--selected {
+  background: var(--tg-theme-button-color, #2AABEE);
+  border-color: var(--tg-theme-button-color, #2AABEE);
+  color: var(--tg-theme-button-text-color, #ffffff);
+}
+
+.date-chip__day {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.date-chip__date {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.date-chip__month {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   БРОНИРОВАНИЕ — сетка столов
+   ═══════════════════════════════════════════════════════════ */
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.table-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80px;
+  border-radius: var(--radius-md);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  gap: 4px;
+  padding: 10px;
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+}
+
+.table-chip:active { transform: scale(0.95); }
+
+.table-chip--free {
+  border-color: var(--color-success, #34C759);
+}
+
+.table-chip--busy {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: var(--color-danger, #FF3B30);
+}
+
+.table-chip--selected {
+  background: var(--tg-theme-button-color, #2AABEE);
+  border-color: var(--tg-theme-button-color, #2AABEE);
+  color: #ffffff;
+}
+
+.table-chip__num {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.table-chip__label {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.table-chip__cap {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   БРОНИРОВАНИЕ — карта зала (Экран 7)
+   ═══════════════════════════════════════════════════════════ */
+.hall-map {
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.hall-map__label {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tg-theme-hint-color, #999);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 0;
+}
+
+.tables-map-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 12px 0;
+}
+
+.map-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.map-table:active { transform: scale(0.93); }
+
+.map-table--free {
+  background: rgba(52, 199, 89, 0.2);
+  border: 2px solid var(--color-success, #34C759);
+  color: var(--color-success, #34C759);
+}
+
+.map-table--busy {
+  background: rgba(255, 59, 48, 0.2);
+  border: 2px solid var(--color-danger, #FF3B30);
+  color: var(--color-danger, #FF3B30);
+}
+
+.map-table__icon { font-size: 20px; }
+.map-table__num  { font-size: 11px; }
+
+/* ═══════════════════════════════════════════════════════════
+   ФОРМА
+   ═══════════════════════════════════════════════════════════ */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tg-theme-hint-color, #999);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.form-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  color: var(--tg-theme-text-color, #000);
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.form-input:focus {
+  border-color: var(--tg-theme-button-color, #2AABEE);
+}
+
+.form-textarea {
+  min-height: 88px;
+  resize: none;
+  padding-top: 12px;
+}
+
+/* Чипы для выбора количества гостей */
+.guests-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  color: var(--tg-theme-text-color, #000);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip--selected,
+.chip:active {
+  background: var(--tg-theme-button-color, #2AABEE);
+  border-color: var(--tg-theme-button-color, #2AABEE);
+  color: var(--tg-theme-button-text-color, #fff);
+}
+
+/* Радио-кнопки */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.radio-label input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--tg-theme-button-color, #2AABEE);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ПОДТВЕРЖДЕНИЕ БРОНИРОВАНИЯ
+   ═══════════════════════════════════════════════════════════ */
+.confirm-card {
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirm-card--info {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, #999);
+  line-height: 1.6;
+}
+
+.confirm-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ЭКРАН УСПЕХА
+   ═══════════════════════════════════════════════════════════ */
+.success-icon {
+  font-size: 72px;
+  margin-bottom: 8px;
+}
+
+.success-booking-id {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, #999);
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ПРОГРАММА ЛОЯЛЬНОСТИ — штампы
+   ═══════════════════════════════════════════════════════════ */
+.loyalty-card {
+  background: var(--color-card-bg, #16162a);
+  border: 1px solid rgba(199,125,255,0.2);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(199,125,255,0.08);
+}
+
+.loyalty-card__title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Сетка 5×2 штампов */
+.stamps-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.stamp-cell {
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  background: var(--tg-theme-bg-color, #fff);
+  border: 2px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
+}
+
+.stamp-cell--filled {
+  background: linear-gradient(135deg, #7a00cc, #c77dff);
+  border-color: #c77dff;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(199,125,255,0.5);
+}
+
+.loyalty-progress {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.loyalty-reward {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, #999);
+  margin-bottom: 16px;
+}
+
+.loyalty-info {
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, #999);
+  line-height: 1.5;
+}
+
+/* QR-код */
+.qr-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.qr-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--tg-theme-hint-color, #ccc);
+  gap: 8px;
+}
+
+.qr-pattern {
+  font-size: 72px;
+  line-height: 1;
+  color: #000;
+}
+
+.qr-label {
+  font-size: 11px;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ПРОФИЛЬ
+   ═══════════════════════════════════════════════════════════ */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 20px;
+  gap: 10px;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+}
+
+.profile-name {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-action-btn {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 16px;
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  color: var(--tg-theme-text-color, #000);
+  cursor: pointer;
+  text-align: left;
+  gap: 12px;
+  width: 100%;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   МОИ БРОНИРОВАНИЯ
+   ═══════════════════════════════════════════════════════════ */
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.booking-item {
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.booking-item__id {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color, #999);
+  margin-bottom: 8px;
+}
+
+.booking-item__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.booking-item__status {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+  color: var(--color-success, #34C759);
+}
+
+.booking-item__cancel {
+  margin-top: 10px;
+  background: none;
+  border: none;
+  color: var(--color-danger, #FF3B30);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ФИЛЬТРЫ И ВКЛАДКИ
+   ═══════════════════════════════════════════════════════════ */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filter-tabs::-webkit-scrollbar { display: none; }
+
+.filter-tab {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: var(--radius-xl);
+  border: none;
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  color: var(--tg-theme-hint-color, #999);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-tab--active {
+  background: var(--tg-theme-button-color, #2AABEE);
+  color: var(--tg-theme-button-text-color, #fff);
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 2px solid var(--tg-theme-secondary-bg-color, #e0e0e0);
+  margin-bottom: 16px;
+}
+
+.tab {
+  flex: 1;
+  min-height: 44px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tg-theme-hint-color, #999);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.15s;
+}
+
+.tab--active {
+  color: var(--tg-theme-button-color, #2AABEE);
+  border-bottom-color: var(--tg-theme-button-color, #2AABEE);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ВСПОМОГАТЕЛЬНЫЕ ЭЛЕМЕНТЫ
+   ═══════════════════════════════════════════════════════════ */
+.legend {
+  display: flex;
+  gap: 20px;
+  margin: 8px 0 16px;
+  font-size: 13px;
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot--green { background: var(--color-success, #34C759); }
+.dot--red   { background: var(--color-danger, #FF3B30); }
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tg-theme-hint-color, #999);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.section-desc {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color, #999);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.hint-text {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, #999);
+  line-height: 1.5;
+}
+
+.link {
+  color: var(--tg-theme-link-color, #2AABEE);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.greeting {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.badge-soon {
+  display: inline-block;
+  background: rgba(255,149,0,0.2);
+  color: var(--color-warning, #FF9500);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-soon-sm {
+  font-size: 10px;
+  background: rgba(255,149,0,0.2);
+  color: var(--color-warning, #FF9500);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.step-hint {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color, #999);
+  background: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.step-date {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--tg-theme-hint-color, #999);
+}
+
+.avatar {
+  font-size: 28px;
+}
+
+.offline-banner {
+  background: rgba(255, 149, 0, 0.15);
+  border: 1px solid var(--color-warning, #FF9500);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--color-warning, #FF9500);
+  margin-top: 8px;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 24px;
+  gap: 12px;
+}
+
+.empty-state__icon {
+  font-size: 48px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOAST — уведомление снизу экрана
+   ═══════════════════════════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: var(--radius-xl);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none;
+  z-index: 1000;
+  max-width: calc(100% - 48px);
+  white-space: normal;
+  text-align: center;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BOTTOM SHEET — модальная шторка снизу
+   ═══════════════════════════════════════════════════════════ */
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 100;
+}
+
+.bottom-sheet-overlay--visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 430px;
+  background: var(--tg-theme-bg-color, #fff);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-modal);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  z-index: 101;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.bottom-sheet--visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.bottom-sheet__handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--tg-theme-hint-color, #ccc);
+  margin: 12px auto 0;
+}
+
+.bottom-sheet__content {
+  padding: 16px 20px 24px;
+}
