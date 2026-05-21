@@ -22,9 +22,9 @@ body {
   font-size: 15px;
   line-height: 1.5;
 
-  /* Цвета берём из Telegram — автоматически тёмная/светлая тема */
-  background-color: var(--tg-theme-bg-color, #ffffff);
-  color: var(--tg-theme-text-color, #000000);
+  /* Фиксированная тёмная тема клуба — не зависим от темы Telegram */
+  background-color: #0d0d1a !important;
+  color: #f0eaff !important;
 }
 
 /* Тёмная клубная тема с неоновыми акцентами */
